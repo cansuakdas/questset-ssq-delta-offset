@@ -14,7 +14,7 @@ move = pd.read_csv('group1_order1_user0_fast_movement.csv')
 v = np.sqrt(np.diff(move['HeadPosX'])**2 + np.diff(move['HeadPosY'])**2 + np.diff(move['HeadPosZ'])**2)
 motion_intensity = v.mean()
 
-# 3. SSQ verisi (sayısallaştırma)
+# 3. SSQ data conversion to numeric values
 ssq = pd.read_csv('SSQ.csv')
 scale = {'None':0, 'Slight':1, 'Moderate':2, 'Severe':3}
 ssq_num = ssq.replace(scale)
@@ -24,7 +24,7 @@ ocular = ssq_num[['Headache','Eyestrain','Fatigue','Difficulty focusing','Blurre
 disor = ssq_num[['Dizziness (eyes open)','Dizziness (eyes closed)','Vertigo','Fullness of the head']].mean(axis=1)
 ssq['SSQ_Total'] = 3.74*nausea + 5.93*ocular + 9.54*disor
 
-# 4. Sonuç tablosu
+# 4. Summary table
 summary = pd.DataFrame({
     'ID': ['group1_order1_user0'],
     'Latency': [latency],
@@ -50,13 +50,13 @@ bitrate_mbps = (dl["size"].sum()*8) / (dl["time"].iloc[-1]-dl["time"].iloc[0]) /
 
 
 move = pd.read_csv(FAST_MOV)
-# zaman adımı (gerçek hız için bölüceğiz)
+# Time step used to calculate physical speed
 dtm = np.diff(move["time"].to_numpy())              # s, ~1/60
 dx = np.diff(move["HeadPosX"].to_numpy())
 dy = np.diff(move["HeadPosY"].to_numpy())
 dz = np.diff(move["HeadPosZ"].to_numpy())
 speed = np.sqrt(dx*dx + dy*dy + dz*dz) / dtm        # m/s
-motion_intensity = np.nanmean(speed)                # ortalama hız
+motion_intensity = np.nanmean(speed)                # Mean speed
 
 ssq = pd.read_csv("SSQ.csv")
 ssq_u = ssq[ssq["ID"]==USER].copy()
